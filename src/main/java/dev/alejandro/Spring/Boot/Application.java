@@ -1,4 +1,4 @@
-package dev.alejandro.Spring.Boot.home;
+package dev.alejandro.Spring.Boot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
