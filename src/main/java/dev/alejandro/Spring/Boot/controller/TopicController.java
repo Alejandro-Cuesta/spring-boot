@@ -1,4 +1,4 @@
-package dev.alejandro.Spring.Boot.controller;
+package dev.alejandro.spring.boot.controller;
 
 public class TopicController {
     

@@ -1,4 +1,4 @@
-package dev.alejandro.Spring.Boot.config;
+package dev.alejandro.spring.boot.config;
 
 public class DatabaseConfig {
     

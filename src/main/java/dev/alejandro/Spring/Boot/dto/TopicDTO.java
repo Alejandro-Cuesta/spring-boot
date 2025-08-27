@@ -1,4 +1,4 @@
-package dev.alejandro.Spring.Boot.dto;
+package dev.alejandro.spring.boot.dto;
 
 public class TopicDTO {
     

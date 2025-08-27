@@ -1,4 +1,4 @@
-package dev.alejandro.Spring.Boot.exception;
+package dev.alejandro.spring.boot.exception;
 
 public class GlobalExceptionHandler {
     

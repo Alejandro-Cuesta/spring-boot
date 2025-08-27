@@ -1,4 +1,4 @@
-package dev.alejandro.Spring.Boot.util;
+package dev.alejandro.spring.boot.util;
 
 public class Mapper {
     
