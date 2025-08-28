@@ -1,4 +1,4 @@
-package dev.alejandro.Spring.Boot;
+package dev.alejandro.spring.boot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

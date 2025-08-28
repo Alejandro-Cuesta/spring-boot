@@ -1,4 +1,4 @@
-package dev.alejandro.Spring.Boot.service;
+package dev.alejandro.spring.boot.service;
 
 public class TopicServiceTests {
     
