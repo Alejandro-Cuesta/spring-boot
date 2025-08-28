@@ -1,5 +1,5 @@
 package dev.alejandro.spring.boot.controller;
 
-public class RequestControllerTests {
+public class TopicControllerTest {
     
 }
