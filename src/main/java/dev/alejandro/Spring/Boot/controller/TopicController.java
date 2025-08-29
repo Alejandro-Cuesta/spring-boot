@@ -2,6 +2,7 @@ package dev.alejandro.spring.boot.controller;
 
 import dev.alejandro.spring.boot.dto.TopicDTO;
 import dev.alejandro.spring.boot.service.TopicService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,14 @@ public class TopicController {
 
     // Listar todos los topics
     @GetMapping
+    @Operation(summary = "Listar todos los topics")
     public List<TopicDTO> getAllTopics() {
         return topicService.getAllTopics();
     }
 
     // Obtener topic por ID
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener un topic por ID")
     public ResponseEntity<TopicDTO> getTopicById(@PathVariable Long id) {
         TopicDTO dto = topicService.getTopicById(id);
         return dto != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
@@ -33,6 +36,7 @@ public class TopicController {
 
     // Crear topic
     @PostMapping
+    @Operation(summary = "Crear un topic")
     public ResponseEntity<TopicDTO> createTopic(@RequestBody TopicDTO dto) {
         TopicDTO created = topicService.createTopic(dto);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
@@ -40,6 +44,7 @@ public class TopicController {
 
     // Actualizar topic
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar un topic existente")
     public ResponseEntity<TopicDTO> updateTopic(@PathVariable Long id, @RequestBody TopicDTO dto) {
         TopicDTO updated = topicService.updateTopic(id, dto);
         return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
@@ -47,6 +52,7 @@ public class TopicController {
 
     // Eliminar topic
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar un topic")
     public ResponseEntity<Void> deleteTopic(@PathVariable Long id) {
         boolean deleted = topicService.deleteTopic(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
