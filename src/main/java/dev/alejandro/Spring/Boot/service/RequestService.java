@@ -23,68 +23,64 @@ public class RequestService {
         this.topicRepository = topicRepository;
     }
 
-    // Obtener todas las solicitudes
+    public RequestDTO createRequest(RequestDTO dto) {
+        Topic tema = topicRepository.findById(dto.getTemaId())
+                .orElseThrow(() -> new IllegalArgumentException("Tema no encontrado"));
+
+        Request request = EntityMapper.toRequestEntity(dto, tema);
+        // lógica que estaba en la entidad:
+        request.setFechaSolicitud(LocalDateTime.now());
+        request.setAtendida(false);
+
+        return EntityMapper.toRequestDTO(requestRepository.save(request));
+    }
+
     public List<RequestDTO> getAllRequests() {
-        return requestRepository.findAllByOrderByFechaSolicitudAsc()
-                .stream()
+        return requestRepository.findAll().stream()
                 .map(EntityMapper::toRequestDTO)
                 .collect(Collectors.toList());
     }
 
-    // Crear una nueva solicitud
-    public RequestDTO createRequest(RequestDTO dto) {
-        Topic topic = topicRepository.findById(dto.getTemaId())
-                .orElseThrow(() -> new RuntimeException("Tema no encontrado"));
+    public RequestDTO updateRequest(Long id, RequestDTO dto) {
+        Request request = requestRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
 
-        Request request = EntityMapper.toRequestEntity(dto, topic);
-        Request saved = requestRepository.save(request);
-        return EntityMapper.toRequestDTO(saved);
+        Topic tema = topicRepository.findById(dto.getTemaId())
+                .orElseThrow(() -> new IllegalArgumentException("Tema no encontrado"));
+
+        request.setNombreSolicitante(dto.getNombreSolicitante());
+        request.setDescripcion(dto.getDescripcion());
+        request.setTema(tema);
+        request.setFechaEdicion(LocalDateTime.now());
+
+        return EntityMapper.toRequestDTO(requestRepository.save(request));
     }
 
-    // Marcar solicitud como atendida
-    public RequestDTO markAsAttended(Long requestId, String nombreAtendio) {
-        return requestRepository.findById(requestId)
-                .map(request -> {
-                    request.setAtendida(true);
-                    request.setNombreAtendio(nombreAtendio);
-                    request.setFechaAtencion(LocalDateTime.now());
-                    Request updated = requestRepository.save(request);
-                    return EntityMapper.toRequestDTO(updated);
-                }).orElse(null);
+    public RequestDTO markAsAttended(Long id, String nombreAtendio) {
+        Request request = requestRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
+
+        request.setAtendida(true);
+        request.setNombreAtendio(nombreAtendio);
+        request.setFechaAtencion(LocalDateTime.now());
+
+        return EntityMapper.toRequestDTO(requestRepository.save(request));
     }
 
-    // Editar solicitud
-    public RequestDTO updateRequest(Long requestId, RequestDTO dto) {
-        return requestRepository.findById(requestId)
-                .map(existing -> {
-                    if (dto.getDescripcion() != null) existing.setDescripcion(dto.getDescripcion());
-                    if (dto.getTemaId() != null) {
-                        Topic topic = topicRepository.findById(dto.getTemaId())
-                                .orElseThrow(() -> new RuntimeException("Tema no encontrado"));
-                        existing.setTema(topic);
-                    }
-                    existing.setFechaEdicion(LocalDateTime.now());
-                    Request updated = requestRepository.save(existing);
-                    return EntityMapper.toRequestDTO(updated);
-                }).orElse(null);
+    //  Cambiado a boolean para que cuadre con tus tests
+    public boolean deleteRequest(Long id) {
+        Request request = requestRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
+
+        if (!Boolean.TRUE.equals(request.getAtendida())) {
+            throw new IllegalStateException("No se puede eliminar una solicitud pendiente");
+        }
+        requestRepository.deleteById(id);
+        return true;
     }
 
-    // Eliminar solicitud (solo si estaba atendida)
-    public boolean deleteRequest(Long requestId) {
-        return requestRepository.findById(requestId)
-                .map(request -> {
-                    if (Boolean.TRUE.equals(request.getAtendida())) {
-                        requestRepository.deleteById(requestId);
-                        return true;
-                    }
-                    return false;
-                }).orElse(false);
-    }
-
-    // Obtener solicitudes pendientes
     public List<RequestDTO> getPendingRequests() {
-        return requestRepository.findByAtendidaFalse()
-                .stream()
+        return requestRepository.findByAtendidaFalse().stream()
                 .map(EntityMapper::toRequestDTO)
                 .collect(Collectors.toList());
     }

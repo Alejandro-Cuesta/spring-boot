@@ -6,7 +6,9 @@ import dev.alejandro.spring.boot.repository.TopicRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -14,15 +16,17 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-class TopicServiceTests {
+class TopicServiceTest {
 
+    @Mock
     private TopicRepository topicRepository;
+
+    @InjectMocks
     private TopicService topicService;
 
     @BeforeEach
     void setup() {
-        topicRepository = Mockito.mock(TopicRepository.class);
-        topicService = new TopicService(topicRepository);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test

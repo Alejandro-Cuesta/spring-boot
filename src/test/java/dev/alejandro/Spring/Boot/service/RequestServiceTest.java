@@ -8,7 +8,9 @@ import dev.alejandro.spring.boot.repository.TopicRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -16,17 +18,20 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-class RequestServiceTests {
+class RequestServiceTest {
 
+    @Mock
     private RequestRepository requestRepository;
+
+    @Mock
     private TopicRepository topicRepository;
+
+    @InjectMocks
     private RequestService requestService;
 
     @BeforeEach
     void setup() {
-        requestRepository = Mockito.mock(RequestRepository.class);
-        topicRepository = Mockito.mock(TopicRepository.class);
-        requestService = new RequestService(requestRepository, topicRepository);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -46,6 +51,8 @@ class RequestServiceTests {
         assertThat(result).isNotNull();
         assertThat(result.getNombreSolicitante()).isEqualTo("Ana");
         assertThat(result.getTemaId()).isEqualTo(1L);
+
+        verify(requestRepository, times(1)).save(any(Request.class));
     }
 
     @Test
@@ -65,10 +72,12 @@ class RequestServiceTests {
         assertThat(result.getAtendida()).isTrue();
         assertThat(result.getNombreAtendio()).isEqualTo("Pedro");
         assertThat(result.getFechaAtencion()).isNotNull();
+
+        verify(requestRepository, times(1)).save(any(Request.class));
     }
 
     @Test
-    @DisplayName("Obtener todas las solicitudes pendientes")
+    @DisplayName("Obtener solicitudes pendientes")
     void testGetPendingRequests() {
         Topic topic = new Topic(2L, "Red");
         Request r1 = new Request();
