@@ -23,6 +23,7 @@ public class RequestService {
         this.topicRepository = topicRepository;
     }
 
+    // Crear solicitud
     public RequestDTO createRequest(RequestDTO dto) {
         Topic tema = topicRepository.findById(dto.getTemaId())
                 .orElseThrow(() -> new IllegalArgumentException("Tema no encontrado"));
@@ -35,12 +36,14 @@ public class RequestService {
         return EntityMapper.toRequestDTO(requestRepository.save(request));
     }
 
+    // Listar todas las solicitudes
     public List<RequestDTO> getAllRequests() {
         return requestRepository.findAll().stream()
                 .map(EntityMapper::toRequestDTO)
                 .collect(Collectors.toList());
     }
 
+    // Editar solicitud
     public RequestDTO updateRequest(Long id, RequestDTO dto) {
         Request request = requestRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
@@ -56,9 +59,14 @@ public class RequestService {
         return EntityMapper.toRequestDTO(requestRepository.save(request));
     }
 
+    // Marcar como atendida
     public RequestDTO markAsAttended(Long id, String nombreAtendio) {
         Request request = requestRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
+
+        if (Boolean.TRUE.equals(request.getAtendida())) {
+            throw new IllegalStateException("La solicitud ya fue atendida anteriormente");
+        }
 
         request.setAtendida(true);
         request.setNombreAtendio(nombreAtendio);
@@ -67,7 +75,7 @@ public class RequestService {
         return EntityMapper.toRequestDTO(requestRepository.save(request));
     }
 
-    //  Cambiado a boolean para que cuadre con tus tests
+    // Eliminar solicitud (solo si está atendida)Cambiado a boolean para que cuadre con los tests
     public boolean deleteRequest(Long id) {
         Request request = requestRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
@@ -79,6 +87,7 @@ public class RequestService {
         return true;
     }
 
+     // Listar solicitudes pendientes
     public List<RequestDTO> getPendingRequests() {
         return requestRepository.findByAtendidaFalse().stream()
                 .map(EntityMapper::toRequestDTO)

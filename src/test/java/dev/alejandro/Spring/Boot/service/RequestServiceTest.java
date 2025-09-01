@@ -15,7 +15,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class RequestServiceTest {
@@ -74,6 +74,64 @@ class RequestServiceTest {
         assertThat(result.getFechaAtencion()).isNotNull();
 
         verify(requestRepository, times(1)).save(any(Request.class));
+    }
+
+    @Test
+    @DisplayName("No se puede marcar como atendida una solicitud ya atendida")
+    void testMarkAsAttendedAlreadyDone() {
+        Request request = new Request();
+        request.setAtendida(true);
+
+        when(requestRepository.findById(20L)).thenReturn(Optional.of(request));
+
+        assertThatThrownBy(() -> requestService.markAsAttended(20L, "Carlos"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("ya fue atendida");
+
+        verify(requestRepository, never()).save(any(Request.class));
+    }
+
+    @Test
+    @DisplayName("Editar solicitud existente")
+    void testUpdateRequest() {
+        Topic oldTopic = new Topic(1L, "Hardware");
+        Topic newTopic = new Topic(2L, "Software");
+
+        Request request = new Request();
+        request.setNombreSolicitante("Ana");
+        request.setDescripcion("Problema viejo");
+        request.setTema(oldTopic);
+
+        RequestDTO dto = new RequestDTO();
+        dto.setNombreSolicitante("Ana María");
+        dto.setDescripcion("Problema actualizado");
+        dto.setTemaId(2L);
+
+        when(requestRepository.findById(5L)).thenReturn(Optional.of(request));
+        when(topicRepository.findById(2L)).thenReturn(Optional.of(newTopic));
+        when(requestRepository.save(any(Request.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        RequestDTO result = requestService.updateRequest(5L, dto);
+
+        assertThat(result.getNombreSolicitante()).isEqualTo("Ana María");
+        assertThat(result.getDescripcion()).isEqualTo("Problema actualizado");
+        assertThat(result.getTemaId()).isEqualTo(2L);
+        assertThat(result.getFechaEdicion()).isNotNull();
+
+        verify(requestRepository, times(1)).save(request);
+    }
+
+    @Test
+    @DisplayName("Editar solicitud inexistente lanza excepción")
+    void testUpdateRequestNotFound() {
+        RequestDTO dto = new RequestDTO();
+        dto.setTemaId(1L);
+
+        when(requestRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> requestService.updateRequest(99L, dto))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Solicitud no encontrada");
     }
 
     @Test

@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -62,5 +63,47 @@ class RequestControllerTest {
                 .andExpect(jsonPath("$.nombreSolicitante").value("Luis"));
 
         verify(requestService, times(1)).createRequest(any(RequestDTO.class));
+    }
+
+    @Test
+    @DisplayName("PUT /api/requests/{id}/attend - Marcar solicitud como atendida")
+    void testMarkAsAttended() throws Exception {
+        RequestDTO dto = new RequestDTO();
+        dto.setId(5L);
+        dto.setNombreSolicitante("Carlos");
+        dto.setAtendida(true);
+        dto.setNombreAtendio("Pedro");
+
+        when(requestService.markAsAttended(5L, "Pedro")).thenReturn(dto);
+
+        mockMvc.perform(put("/api/requests/5/attend")
+                        .param("nombreAtendio", "Pedro"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.atendida").value(true))
+                .andExpect(jsonPath("$.nombreAtendio").value("Pedro"));
+
+        verify(requestService, times(1)).markAsAttended(5L, "Pedro");
+    }
+
+    @Test
+    @DisplayName("PUT /api/requests/{id} - Editar solicitud existente")
+    void testUpdateRequest() throws Exception {
+        RequestDTO dto = new RequestDTO();
+        dto.setId(7L);
+        dto.setNombreSolicitante("Ana María");
+        dto.setDescripcion("Problema actualizado");
+        dto.setTemaId(3L);
+
+        when(requestService.updateRequest(eq(7L), any(RequestDTO.class))).thenReturn(dto);
+
+        mockMvc.perform(put("/api/requests/7")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombreSolicitante\":\"Ana María\",\"descripcion\":\"Problema actualizado\",\"temaId\":3}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nombreSolicitante").value("Ana María"))
+                .andExpect(jsonPath("$.descripcion").value("Problema actualizado"))
+                .andExpect(jsonPath("$.temaId").value(3));
+
+        verify(requestService, times(1)).updateRequest(eq(7L), any(RequestDTO.class));
     }
 }
