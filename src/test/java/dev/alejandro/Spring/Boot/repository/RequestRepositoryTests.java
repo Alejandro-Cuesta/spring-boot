@@ -13,7 +13,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-class RequestRepositoryTests {
+class RequestRepositoryTest {
 
     @Autowired
     private TopicRepository topicRepository;
@@ -24,22 +24,21 @@ class RequestRepositoryTests {
     @Test
     @DisplayName("Guardar y encontrar Request por ID")
     void whenSaveRequest_thenCanBeFoundById() {
-        // Arrange
         Topic topic = topicRepository.save(new Topic("Software"));
         Request request = new Request("Ana", topic, "No funciona el PC");
         request.setFechaSolicitud(LocalDateTime.now());
 
-        // Act
         Request saved = requestRepository.save(request);
 
-        // Assert
         assertThat(requestRepository.findById(saved.getId())).isPresent();
+        Request found = requestRepository.findById(saved.getId()).get();
+        assertThat(found.getNombreSolicitante()).isEqualTo("Ana");
+        assertThat(found.getDescripcion()).isEqualTo("No funciona el PC");
     }
 
     @Test
     @DisplayName("Listar todas las solicitudes ordenadas por fecha")
     void whenFindAllByOrderByFechaSolicitudAsc_thenOrderedList() {
-        // Arrange
         Topic topic = topicRepository.save(new Topic("Impresora"));
 
         Request r1 = new Request("Luis", topic, "Problema con drivers");
@@ -50,18 +49,18 @@ class RequestRepositoryTests {
         requestRepository.save(r1);
         requestRepository.save(r2);
 
-        // Act
         List<Request> requests = requestRepository.findAllByOrderByFechaSolicitudAsc();
 
-        // Assert
         assertThat(requests).hasSize(2);
         assertThat(requests.get(0).getNombreSolicitante()).isEqualTo("Luis");
+        assertThat(requests.get(0).getDescripcion()).isEqualTo("Problema con drivers");
+        assertThat(requests.get(1).getNombreSolicitante()).isEqualTo("Marta");
+        assertThat(requests.get(1).getDescripcion()).isEqualTo("No imprime");
     }
 
     @Test
     @DisplayName("Filtrar solicitudes pendientes y atendidas")
     void whenFindByAtendida_thenReturnsCorrectRequests() {
-        // Arrange
         Topic topic = topicRepository.save(new Topic("Red"));
 
         Request r1 = new Request("Ana", topic, "Wifi no conecta");
@@ -75,15 +74,15 @@ class RequestRepositoryTests {
         requestRepository.save(r1);
         requestRepository.save(r2);
 
-        // Act
         List<Request> pendientes = requestRepository.findByAtendidaFalse();
         List<Request> atendidas = requestRepository.findByAtendidaTrue();
 
-        // Assert
         assertThat(pendientes).hasSize(1);
         assertThat(pendientes.get(0).getNombreSolicitante()).isEqualTo("Ana");
+        assertThat(pendientes.get(0).getDescripcion()).isEqualTo("Wifi no conecta");
 
         assertThat(atendidas).hasSize(1);
         assertThat(atendidas.get(0).getNombreSolicitante()).isEqualTo("Pedro");
+        assertThat(atendidas.get(0).getDescripcion()).isEqualTo("VPN caída");
     }
 }
