@@ -164,4 +164,31 @@ class RequestServiceTest {
         assertThat(deleted).isTrue();
         verify(requestRepository, times(1)).deleteById(10L);
     }
+
+    @Test
+    @DisplayName("Eliminar solicitud pendiente lanza excepción")
+    void testDeletePendingRequestThrowsException() {
+        Request request = new Request();
+        request.setAtendida(false);
+
+        when(requestRepository.findById(11L)).thenReturn(Optional.of(request));
+
+        assertThatThrownBy(() -> requestService.deleteRequest(11L))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("pendiente");
+
+        verify(requestRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    @DisplayName("Eliminar solicitud inexistente lanza excepción")
+    void testDeleteRequestNotFound() {
+        when(requestRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> requestService.deleteRequest(99L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Solicitud no encontrada");
+
+        verify(requestRepository, never()).deleteById(anyLong());
+    }
 }

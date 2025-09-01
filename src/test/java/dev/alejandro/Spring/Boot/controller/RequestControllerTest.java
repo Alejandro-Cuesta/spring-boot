@@ -106,4 +106,39 @@ class RequestControllerTest {
 
         verify(requestService, times(1)).updateRequest(eq(7L), any(RequestDTO.class));
     }
+
+    @Test
+    @DisplayName("DELETE /api/requests/{id} - Eliminar solicitud atendida")
+    void testDeleteRequest() throws Exception {
+        when(requestService.deleteRequest(10L)).thenReturn(true);
+
+        mockMvc.perform(delete("/api/requests/10"))
+                .andExpect(status().isNoContent()); // 204
+
+        verify(requestService, times(1)).deleteRequest(10L);
+    }
+
+    @Test
+    @DisplayName("DELETE /api/requests/{id} - No se puede eliminar solicitud pendiente")
+    void testDeleteRequestPending() throws Exception {
+        when(requestService.deleteRequest(11L)).thenThrow(new IllegalStateException("No se puede eliminar una solicitud pendiente"));
+
+        mockMvc.perform(delete("/api/requests/11"))
+                .andExpect(status().isBadRequest()) // 400
+                .andExpect(content().string("No se puede eliminar una solicitud pendiente"));
+
+        verify(requestService, times(1)).deleteRequest(11L);
+    }
+
+    @Test
+    @DisplayName("DELETE /api/requests/{id} - Solicitud inexistente")
+    void testDeleteRequestNotFound() throws Exception {
+        when(requestService.deleteRequest(99L)).thenThrow(new IllegalArgumentException("Solicitud no encontrada"));
+
+        mockMvc.perform(delete("/api/requests/99"))
+                .andExpect(status().isNotFound()) // 404
+                .andExpect(content().string("Solicitud no encontrada"));
+
+        verify(requestService, times(1)).deleteRequest(99L);
+    }
 }
