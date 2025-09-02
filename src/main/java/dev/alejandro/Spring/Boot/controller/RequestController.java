@@ -27,6 +27,7 @@ public class RequestController {
     public List<RequestDTO> getAllRequests() {
         return requestService.getAllRequests();
     }
+    
     // Listar solicitudes pendientes
     @GetMapping("/pending")
     @Operation(summary = "Listar solicitudes pendientes")
@@ -69,8 +70,7 @@ public class RequestController {
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-    // Manejo de errores específicos
-    
+    // Manejo de errores específicos 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleNotFound(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
