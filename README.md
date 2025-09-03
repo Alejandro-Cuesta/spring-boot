@@ -42,16 +42,16 @@ Incluye:
 
 ## Pasos para la instalación
 
-- 1) Clonar el repositorio
+1. Clonar el repositorio
 
 git clone https://github.com/Alejandro-Cuesta/spring-boot.git
 cd spring-boot
 
-- 2) Ejecutar la aplicación
+2. Ejecutar la aplicación
 
 mvn spring-boot:run
 
-- 3) Acceder a Swagger UI
+3. Acceder a Swagger UI
 
 http://localhost:8080/swagger-ui.html
 
