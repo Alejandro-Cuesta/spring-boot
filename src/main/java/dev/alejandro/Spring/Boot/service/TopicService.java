@@ -2,6 +2,7 @@ package dev.alejandro.spring.boot.service;
 
 import dev.alejandro.spring.boot.dto.TopicDTO;
 import dev.alejandro.spring.boot.entity.Topic;
+import dev.alejandro.spring.boot.exception.TopicNotFoundException;
 import dev.alejandro.spring.boot.repository.TopicRepository;
 import dev.alejandro.spring.boot.util.EntityMapper;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class TopicService {
     public TopicDTO getTopicById(Long id) {
         return topicRepository.findById(id)
                 .map(EntityMapper::toTopicDTO)
-                .orElse(null);
+                .orElseThrow(() -> new TopicNotFoundException("Tema no encontrado con id " + id));
     }
 
     // Crear un nuevo tema
@@ -47,7 +48,8 @@ public class TopicService {
                     existing.setNombre(dto.getNombre());
                     Topic updated = topicRepository.save(existing);
                     return EntityMapper.toTopicDTO(updated);
-                }).orElse(null);
+                })
+                .orElseThrow(() -> new TopicNotFoundException("Tema no encontrado con id " + id));
     }
 
     // Eliminar un tema
@@ -56,6 +58,6 @@ public class TopicService {
             topicRepository.deleteById(id);
             return true;
         }
-        return false;
+        throw new TopicNotFoundException("Tema no encontrado con id " + id);
     }
 }
