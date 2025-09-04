@@ -11,7 +11,7 @@ Incluye:
 - Tests unitarios con JUnit 5.
 - Documentación de endpoints con Swagger y Postman.
 - Diagramas para explicar la arquitectura.
-- Reporte de cobertura de tests (83%).
+- Reporte de cobertura de tests.
 
 
 ##  Requisitos iniciales del Proyecto

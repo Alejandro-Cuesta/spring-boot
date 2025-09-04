@@ -7,10 +7,8 @@ import dev.alejandro.spring.boot.entity.Topic;
 
 public class EntityMapper {
 
-    // -----------------------
     // Topic <-> TopicDTO
-    // -----------------------
-
+   
     public static TopicDTO toTopicDTO(Topic topic) {
         if (topic == null) return null;
         return new TopicDTO(topic.getId(), topic.getNombre());
@@ -21,10 +19,8 @@ public class EntityMapper {
         return new Topic(dto.getId(), dto.getNombre());
     }
 
-    // -----------------------
     // Request <-> RequestDTO
-    // -----------------------
-
+   
     public static RequestDTO toRequestDTO(Request request) {
         if (request == null) return null;
 
