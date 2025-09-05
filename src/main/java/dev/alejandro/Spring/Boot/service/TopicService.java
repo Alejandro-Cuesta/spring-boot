@@ -2,7 +2,7 @@ package dev.alejandro.spring.boot.service;
 
 import dev.alejandro.spring.boot.dto.TopicDTO;
 import dev.alejandro.spring.boot.entity.Topic;
-import dev.alejandro.spring.boot.exception.TopicNotFoundException;
+import dev.alejandro.spring.boot.exception.topic.TopicNotFoundException;
 import dev.alejandro.spring.boot.repository.TopicRepository;
 import dev.alejandro.spring.boot.util.EntityMapper;
 import org.springframework.stereotype.Service;

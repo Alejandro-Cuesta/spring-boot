@@ -25,6 +25,6 @@ public class SwaggerConfig {
                 )
                 .externalDocs(new ExternalDocumentation()
                         .description("Repositorio del proyecto")
-                        .url("https://github.com/tu_usuario/tu_proyecto"));
+                        .url("https://github.com/Alejandro-Cuesta/spring-boot.git"));
     }
 }

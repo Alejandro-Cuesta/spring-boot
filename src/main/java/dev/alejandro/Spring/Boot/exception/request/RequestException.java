@@ -1,4 +1,4 @@
-package dev.alejandro.spring.boot.exception;
+package dev.alejandro.spring.boot.exception.request;
 
 
 //Excepción base para cualquier error relacionado con solicitudes (Request)//

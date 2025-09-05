@@ -1,4 +1,4 @@
-package dev.alejandro.spring.boot.exception;
+package dev.alejandro.spring.boot.exception.request;
 
 //Excepción que representa el caso en el que una solicitud (Request) no es encontrada//
 //Será capturada por GlobalExceptionHandler para devolver un 404 (Not Found)//

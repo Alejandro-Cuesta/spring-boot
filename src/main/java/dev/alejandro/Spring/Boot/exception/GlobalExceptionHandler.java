@@ -5,6 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import dev.alejandro.spring.boot.exception.request.RequestException;
+import dev.alejandro.spring.boot.exception.request.RequestNotFoundException;
+import dev.alejandro.spring.boot.exception.topic.TopicException;
+import dev.alejandro.spring.boot.exception.topic.TopicNotFoundException;
+
 //Manejo global de excepciones//
 //Gracias a @ControllerAdvice, Spring captura las excepciones y las procesa aquí para devolver una respuesta HTTP uniforme//
 @ControllerAdvice

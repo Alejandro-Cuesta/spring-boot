@@ -1,4 +1,4 @@
-package dev.alejandro.spring.boot.exception;
+package dev.alejandro.spring.boot.exception.topic;
 
 //Excepción base para cualquier error relacionado con temas (Topic)//
 public class TopicException extends RuntimeException {
